@@ -1,0 +1,16 @@
+[Unit]
+Description=MIDI Hub - T-8 clock sync + APC Key 25 to E-4 routing
+After=sound.target
+
+[Service]
+Type=simple
+User=tasso
+ExecStartPre=/bin/sleep 15
+ExecStart=/usr/bin/python3 /usr/local/bin/midi_hub.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
