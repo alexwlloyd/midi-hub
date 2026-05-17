@@ -1,10 +1,20 @@
 [Unit]
 Description=MIDI Hub - T-8 clock sync + APC Key 25 to E-4 routing
-After=sound.target
+After=sound.target network.target
 
 [Service]
 Type=simple
 User=tasso
+
+# Real-time scheduling — keeps MIDI callbacks preempting everything else
+CPUSchedulingPolicy=fifo
+CPUSchedulingPriority=50
+LimitRTPRIO=99
+Nice=-10
+
+# Pin to isolated core 3 (set isolcpus=3 in /boot/firmware/cmdline.txt)
+CPUAffinity=3
+
 ExecStartPre=/bin/sleep 15
 ExecStart=/usr/bin/python3 /usr/local/bin/midi_hub.py
 Restart=always
