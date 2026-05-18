@@ -608,7 +608,7 @@ class MidiHub:
                 self.arp_tick_counter = 0
                 self._arp_step()
 
-        if self.abs_tick % TICKS_PER_32ND == 0:
+        if self.abs_tick % TICKS_PER_BEAT == 0:
             self._beat_boundary()
 
         for r in range(ROWS):
@@ -646,8 +646,8 @@ class MidiHub:
 
                 elif clip.state == State.ARMED_STOP:
                     raw   = self.abs_tick - clip.rec_start
-                    steps = max(1, round(raw / TICKS_PER_32ND))
-                    clip.loop_ticks = steps * TICKS_PER_32ND
+                    steps = max(1, round(raw / TICKS_PER_BEAT))
+                    clip.loop_ticks = steps * TICKS_PER_BEAT
                     ch = COLUMNS[c]["ch"]
                     for note in clip.active_notes:
                         clip.events.append((clip.loop_ticks - 1, [0x80 | ch, note, 0]))
@@ -661,7 +661,7 @@ class MidiHub:
                         self._led(r, c, LED.GREEN)
                     self._update_scene_led(r)
                     self._schedule_save()
-                    log.info("  [%d,%d] %s  %s  loop=%d 16ths  events=%d",
+                    log.info("  [%d,%d] %s  %s  loop=%d beats  events=%d",
                              r, c, COLUMNS[c]["name"],
                              "MASTER_PAUSED" if self.master_paused else "PLAYING",
                              steps, len(clip.events))
